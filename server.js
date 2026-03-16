@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -12,8 +13,13 @@ if (!ANTHROPIC_API_KEY) {
   process.exit(1);
 }
 
-// Health check
+// Serve the dashboard HTML at the root
 app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// Health check (used by the dashboard Test button)
+app.get("/health", (req, res) => {
   res.json({ status: "KIS Grant Intelligence Server running", ok: true });
 });
 
@@ -46,4 +52,5 @@ app.post("/api/chat", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`KIS Grant Intelligence Server listening on port ${PORT}`);
+  console.log(`Dashboard available at http://localhost:${PORT}`);
 });
